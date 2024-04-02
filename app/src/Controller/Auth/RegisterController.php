@@ -2,46 +2,47 @@
 
 namespace App\Controller\Auth;
 
+use App\DataObject\UserRegisterDTO;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use JetBrains\PhpStorm\NoReturn;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RegisterController extends AbstractController
 {
 
-    #[Route(path: '/api/register', name: 'api_register', methods: ['POST'])]
-    public function index(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, UserPasswordHasherInterface $hasher): JsonResponse
+    #[NoReturn] #[Route(path: '/register', name: 'api_register', methods: ['POST'], format: 'json')]
+    public function index(
+        #[MapRequestPayload] UserRegisterDTO $userRegisterDTO,
+        EntityManagerInterface               $entityManager,
+        UserRepository                       $userRepository,
+        UserPasswordHasherInterface          $hasher,
+        ValidatorInterface                   $validator
+    ): JsonResponse
     {
-
-        $data = json_decode($request->getContent());
-        $email = $data->email;
-        $password = $data->password;
-
-        if (!$email || !$password) {
-            return $this->json([
-                'error' => 'Null credentials'
-            ]);
-        }
-
-        if ($userRepository->isEmailInUse($email)) {
-            return $this->json([
-                'error' => 'Email already in use'
-            ]);
-        }
 
 
         $user = new User();
-        $user->setEmail($email);
-        $user->setPassword($hasher->hashPassword($user, $password));
-        $user->setRoles($user->getRoles());
+        $user->setEmail($userRegisterDTO->getEmail());
+        $user->setPassword($hasher->hashPassword($user, $userRegisterDTO->getPassword()));
 
-        $entityManager->persist($user);
-        $entityManager->flush();
+        $validation = $validator->validate($user);
+
+        try {
+            $entityManager->persist($user);
+            $entityManager->flush();
+        } catch (UniqueConstraintViolationException $e) {
+            return $this->json([
+                'message' => 'Az email cim már létezik.'
+            ]);
+        }
 
 
         return $this->json([

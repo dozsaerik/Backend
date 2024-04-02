@@ -7,9 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity(fields: 'email', message: 'Az email cim már létezik.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -17,27 +19,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    private string $email;
 
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
-    private ?string $password = null;
+    #[Assert\NotBlank]
+    private string $password;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
