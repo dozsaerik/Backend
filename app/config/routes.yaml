@@ -1,11 +1,14 @@
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
-    prefix: '/api'
-    trailing_slash_on_root: false
+  resource:
+    path: ../src/Controller/
+    namespace: App\Controller
+  type: attribute
+  prefix: '/api'
+  trailing_slash_on_root: false
 
 api_login_check:
-    path: /api/login_check
+  path: /api/login
+
+api_refresh_token:
+  path: /api/token/refresh
 
