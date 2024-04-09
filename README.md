@@ -5,3 +5,9 @@
 - docker-compose build
 - docker-compose up -d
 - docker exec php-container php bin/console doctrine:schema:update --force --complete
+
+
+### API végpontok
+
+- /api/login
+- /api/register
