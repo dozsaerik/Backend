@@ -22,4 +22,4 @@ RUN addgroup --gid 1000 symfony
 RUN adduser --ingroup symfony --shell /bin/sh symfony
 USER symfony
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["sh", "/usr/local/bin/entrypoint.sh"]
