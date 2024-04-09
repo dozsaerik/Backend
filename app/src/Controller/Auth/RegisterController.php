@@ -41,7 +41,7 @@ class RegisterController extends AbstractController
         } catch (UniqueConstraintViolationException $e) {
             return $this->json([
                 'message' => 'Az email cim már létezik.'
-            ]);
+            ], 409);
         }
 
 
