@@ -18,8 +18,8 @@ RUN apt install symfony-cli
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+ENTRYPOINT ["sh", "/usr/local/bin/entrypoint.sh"]
+
 RUN addgroup --gid 1000 symfony
 RUN adduser --ingroup symfony --shell /bin/sh symfony
 USER symfony
-
-ENTRYPOINT ["sh", "/usr/local/bin/entrypoint.sh"]
