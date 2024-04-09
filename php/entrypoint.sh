@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Start PHP-FPM
+php-fpm
+
 # Run composer install
 composer install
 
@@ -9,5 +12,4 @@ php bin/console lexik:jwt:generate-keypair
 # Update database schema
 php bin/console doctrine:schema:update --force --complete
 
-# Start PHP-FPM
-php-fpm
+
