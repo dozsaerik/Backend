@@ -1,6 +1,6 @@
-#Egyszerű belépés / Regisztráció 
+# Egyszerű belépés / Regisztráció 
 
-Telepítés: 
+### Telepítés: 
 
 - docker-compose build
 - docker-compose up -d
