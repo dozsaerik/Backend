@@ -46,7 +46,7 @@ class RegisterController extends AbstractController
 
 
         return $this->json([
-            'Test' => 'Hello'
+            'message' => 'Successfully registered.'
         ]);
     }
 
